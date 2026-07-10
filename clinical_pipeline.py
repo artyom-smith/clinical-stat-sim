@@ -592,22 +592,20 @@ class DataAnalyzer:
 
 
 if __name__ == '__main__':
-    print("--- Running Clinical Pipeline Demo ---")
-    
-    # 1. Generate data
-    generator = TrialDataset(patient_number=50)
-    df_raw = generator.generate_main_data()
-    print("1. Synthetic data generated successfully.")
-    
-    # 2. Clean data
-    preprocessor = DataPreprocessor()
-    df_clean = preprocessor.process(df_raw)
-    print("2. Data cleaned and preprocessed.")
-    
-    # 3. Analize data
-    analyzer = DataAnalyzer()
-    print("\n3. Statistical Cohort Report:")
+  print("--- Running Clinical Pipeline Demo ---")
 
-    # 4. Generate a report
-    report = analyzer.describe_cohort(df_clean, columns=['Age', 'Gender'])
-    print(report)
+  # 1. Generated raw data (waste and other_labs are automatically applied internally)
+  generator = TrialDataset(patient_number=100, d_value=2.5)
+  df_raw = generator.df
+  print(f"1. Synthetic data generated successfully. Shape: {df_raw.shape}")
+
+  # 2. Pass the raw data to the Analyzer. analyzer = DataAnalyzer(source=df_raw, strict_load=True, strict_for_nan=False)
+  print("2. Data automatically preprocessed inside DataAnalyzer.")
+
+  # 3. Generate a statistical report
+  print("\n3. Statistical Cohort Report:")
+  report = analyzer.describe_cohort(columns=['Age', 'Gender', 'Moca score'])
+  print(report)
+
+  # 4. Plot a graph
+  analyzer.get_plot(col='Moca score')
